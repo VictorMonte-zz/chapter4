@@ -26,6 +26,7 @@ class CustomerServiceImpl : CustomerService {
     override fun createCustomer(customer: Mono<Customer>): Mono<*> {
         return customer.map{
             customers[it.id] = it
+            Mono.empty<Any>()
         }
     }
 }
