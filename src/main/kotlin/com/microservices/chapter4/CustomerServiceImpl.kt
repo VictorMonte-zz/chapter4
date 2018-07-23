@@ -2,6 +2,7 @@ package com.microservices.chapter4
 
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
+import reactor.core.publisher.toFlux
 import reactor.core.publisher.toMono
 import java.util.concurrent.ConcurrentHashMap
 
@@ -17,8 +18,8 @@ class CustomerServiceImpl : CustomerService {
 
     override fun getCustomer(id: Int) = Mono.justOrEmpty(customers.get(id))
 
-    override fun searchCustomers(nameFilter: String): List<Customer> =
+    override fun searchCustomers(nameFilter: String) =
             customers.filter {
                 it.value.name.contains(nameFilter, true)
-            }.map(Map.Entry<Int, Customer>::value).toList()
+            }.map(Map.Entry<Int, Customer>::value).toFlux()
 }
