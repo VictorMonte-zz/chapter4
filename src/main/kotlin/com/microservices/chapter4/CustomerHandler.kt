@@ -6,8 +6,7 @@ import org.springframework.web.reactive.function.server.ServerResponse.ok
 import reactor.core.publisher.toMono
 
 @Component
-class CustomerHandler{
+class CustomerHandler(val customerService: CustomerService){
     fun get(serverRequest: ServerRequest) =
-            ok().body(Customer(1, "functional program").toMono(),
-                    Customer::class.java)
+            ok().body(customerService.getCustomer(1), Customer::class.java)
 }
