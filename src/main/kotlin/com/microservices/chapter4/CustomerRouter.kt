@@ -16,5 +16,8 @@ class CustomerRouter(private var customerHandler: CustomerHandler){
                 GET("/{id}", customerHandler::get)
             }
         }
+        "/customers".nest {
+            GET("/", customerHandler::search)
+        }
     }
 }

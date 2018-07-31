@@ -13,4 +13,7 @@ class CustomerHandler(val customerService: CustomerService){
             ok().body(customerService.getCustomer(serverRequest.pathVariable("id").toInt()), Customer::class.java)
                     .flatMap { ok().body(fromObject(it)) }
                     .switchIfEmpty(status(HttpStatus.NOT_FOUND).build())
+
+    fun search(serverRequest: ServerRequest) =
+            ok().body(customerService.searchCustomers(""), Customer::class.java)
 }
