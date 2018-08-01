@@ -23,10 +23,15 @@ class CustomerServiceImpl : CustomerService {
                 it.value.name.contains(nameFilter, true)
             }.map(Map.Entry<Int, Customer>::value).toFlux()
 
-    override fun createCustomer(customer: Mono<Customer>): Mono<Customer> {
-        return customer.map{
-            customers[it.id] = it
-            it
-        }
-    }
+    override fun createCustomer(customer: Mono<Customer>) =
+            customer.flatMap {
+                if (customers[it.id] == null) {
+                    customers[it.id] = it
+                    it.toMono()
+                }
+                else
+                {
+                    Mono.error(CustomerExistException("Customer ${it.id} already exists"))
+                }
+            }
 }

@@ -6,6 +6,7 @@ import org.springframework.web.reactive.function.BodyInserters.fromObject
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse.*
 import org.springframework.web.reactive.function.server.bodyToMono
+import reactor.core.publisher.onErrorResume
 import java.net.URI
 
 @Component
@@ -22,5 +23,8 @@ class CustomerHandler(val customerService: CustomerService){
     fun create(serverRequest: ServerRequest) =
             customerService.createCustomer(serverRequest.bodyToMono()).flatMap {
                 created(URI.create("/functional/customer/${it.id}")).build()
+            }.onErrorResume(Exception::class){
+                badRequest().body(fromObject(ErrorResponse("error creating customer",
+                        it.message ?: "error")))
             }
 }
